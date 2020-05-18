@@ -2,17 +2,22 @@
 public class Main {
     public static void main(String[] args) {
         Warehouse warehouse = new Warehouse();
-        Buyer buyer = new Buyer(warehouse);
-        Fabricator fabricator = new Fabricator(warehouse);
+        Fabricator fabricator = new Fabricator(warehouse, 5);
+        Buyer buyer = new Buyer(warehouse, 5);
+
         Thread thread1 = new Thread(fabricator);
         Thread thread2 = new Thread(buyer);
-        thread1.start();
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
 
+        thread1.start();
         thread2.start();
+
+        try {
+
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+
+            e.printStackTrace();
+        }
     }
 }
