@@ -1,43 +1,40 @@
 import java.util.ArrayDeque;
 
-class Warehouse {
+class Warehouse{
 
     private ArrayDeque<Character> arrayDeque = new ArrayDeque<>();
-    static volatile boolean chck;
+    private boolean isFull = false;
 
-    synchronized void addStuff() {
+    synchronized void addStuff(Character character) {
 
-        chck = true;
-
-        for (int i = 0; i < 10; i++) {
-
-            Character character = (char) (int) (Math.random() * 500);
-            System.out.println("I made stuff: " + character);
-            arrayDeque.addLast(character);
-        }
-
-        notify();
-
-        try {
-            wait();
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    synchronized Character getStuff() {
-
-        if (arrayDeque.size() == 1) {
-
-            chck = false;
-            notify();
+        if (isFull) {
 
             try {
                 wait();
             } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
+        arrayDeque.addLast(character);
+        isFull = true;
+        notify();
+    }
+
+
+    synchronized Character getStuff() {
+
+        if (!isFull) {
+
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        isFull = false;
+        notify();
         return arrayDeque.pollFirst();
     }
 }
