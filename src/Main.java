@@ -2,8 +2,8 @@
 public class Main {
     public static void main(String[] args) {
         Warehouse warehouse = new Warehouse();
-        Fabricator fabricator = new Fabricator(warehouse, 5);
-        Buyer buyer = new Buyer(warehouse, 5);
+        Fabricator fabricator = new Fabricator(warehouse, 100);
+        Buyer buyer = new Buyer(warehouse, 100);
 
         Thread thread1 = new Thread(fabricator);
         Thread thread2 = new Thread(buyer);

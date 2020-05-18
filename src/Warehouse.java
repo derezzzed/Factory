@@ -3,11 +3,12 @@ import java.util.ArrayDeque;
 class Warehouse{
 
     private ArrayDeque<Character> arrayDeque = new ArrayDeque<>();
-    private boolean isFull = false;
+    private final int MAX_SIZE = 5;
+    private final int MIN_SIZE = 1;
 
     synchronized void addStuff(Character character) {
 
-        if (isFull) {
+        while (arrayDeque.size() >= MAX_SIZE) {
 
             try {
                 wait();
@@ -16,16 +17,17 @@ class Warehouse{
             }
         }
 
-        arrayDeque.addLast(character);
-        isFull = true;
         notify();
+        arrayDeque.addLast(character);
+
     }
 
 
     synchronized Character getStuff() {
 
-        if (!isFull) {
+        while (arrayDeque.size() < MIN_SIZE) {
 
+            notify();
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -33,8 +35,6 @@ class Warehouse{
             }
         }
 
-        isFull = false;
-        notify();
         return arrayDeque.pollFirst();
     }
 }
